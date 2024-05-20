@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(name = "users")
 @Getter @Setter
 @RequiredArgsConstructor
-@Builder(builderMethodName = "of")
+@Builder
 public class User  {
 
     @Id
