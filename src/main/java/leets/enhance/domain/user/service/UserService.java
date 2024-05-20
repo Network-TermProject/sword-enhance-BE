@@ -24,7 +24,7 @@ public class UserService {
         if(!requestDto.getPwd().equals(requestDto.getCheckPwd()))
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 
-        User user = User.builder()
+        User user = User.of()
                 .email(requestDto.getEmail())
                 .name(requestDto.getName())
                 .pwd(requestDto.getPwd())
