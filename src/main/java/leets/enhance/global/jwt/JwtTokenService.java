@@ -14,8 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -64,9 +63,9 @@ public class JwtTokenService {
     public Authentication getAuthentication(String accessToken) {
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
-        // GrantedAuthority를 설정해야 믿을만한 토큰으로 간주하여 임시로 USER라는 authority 넣음
-        UserDetails principal = new User(claims.getSubject(), "", Collections.singleton(new SimpleGrantedAuthority("USER")));
-        return new UsernamePasswordAuthenticationToken(principal, "", Collections.singleton(new SimpleGrantedAuthority("USER")));
+
+        UserDetails principal = new User(claims.getSubject(), "", List.of());
+        return new UsernamePasswordAuthenticationToken(principal, "", List.of());
     }
 
     // 토큰 정보를 검증하는 메서드
