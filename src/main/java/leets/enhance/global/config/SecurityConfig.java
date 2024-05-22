@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -24,8 +23,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
-        requestHandler.setCsrfRequestAttributeName("_csrf");
 
         http    // 세션 해제
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -42,6 +39,7 @@ public class SecurityConfig {
                 // 도메인 별 권한 설정
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/items/**").authenticated()
+                        .requestMatchers("/items/top10").permitAll()    // 비로그인 유저 접근 허용
                         .requestMatchers("/enhance/**").authenticated()
                         .requestMatchers("/users/**").permitAll())
 
