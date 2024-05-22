@@ -4,7 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class ItemRegisterDto {
-
     private String name;
-
 }
