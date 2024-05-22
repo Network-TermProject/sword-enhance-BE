@@ -9,26 +9,17 @@ import leets.enhance.global.jwt.JwtToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private static UserService userService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody UserRegisterDto requestDto) {
-        User save = userService.register(requestDto);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(save.getId())
-                .toUri();    // http://localhost:8080/users/{id}
-
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.ok(userService.register(requestDto));
     }
 
     @PostMapping("/login")
