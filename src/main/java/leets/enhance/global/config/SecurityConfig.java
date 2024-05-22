@@ -27,14 +27,25 @@ public class SecurityConfig {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
 
+        http    // 세션 해제
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // CORS 해제
                 .cors(AbstractHttpConfigurer::disable)
+
+                // CSRF 해제
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // Jwt 토큰 필터 삽입
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
+
+                // 도메인 별 권한 설정
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/attendances/**").authenticated()
+                        .requestMatchers("/items/**").authenticated()
+                        .requestMatchers("/enhance/**").authenticated()
                         .requestMatchers("/users/**").permitAll())
+
+                // 스프링 시큐리티 기본 로그인 해제
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
