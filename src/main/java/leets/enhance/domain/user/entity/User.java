@@ -1,6 +1,7 @@
 package leets.enhance.domain.user.entity;
 
 import jakarta.persistence.*;
+import leets.enhance.domain.item.entity.Item;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,16 +20,24 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;    // 수정: Validation 추가
     private String email;
     private String pwd;
     private String name;
+
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Item> items;
 
     @Builder(builderMethodName = "of")
     public User(String email, String pwd, String name) {
         this.email = email;
         this.pwd = pwd;
         this.name = name;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
     }
 
     @Override
