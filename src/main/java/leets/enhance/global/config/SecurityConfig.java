@@ -34,12 +34,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 // Jwt 토큰 필터 삽입
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
 
                 // 도메인 별 권한 설정
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/items/**").authenticated()
                         .requestMatchers("/items/top10").permitAll()    // 비로그인 유저 접근 허용
+                        .requestMatchers("/items/**").authenticated()
                         .requestMatchers("/enhance/**").authenticated()
                         .requestMatchers("/users/**").permitAll())
 
