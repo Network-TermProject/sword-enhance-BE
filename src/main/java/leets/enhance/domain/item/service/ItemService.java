@@ -5,14 +5,18 @@ import leets.enhance.domain.item.entity.DestroyProbability;
 import leets.enhance.domain.item.entity.Item;
 import leets.enhance.domain.item.entity.Status;
 import leets.enhance.domain.item.entity.SuccessProbability;
+import leets.enhance.domain.item.exception.InvalidAccessException;
 import leets.enhance.domain.item.model.request.ItemRegisterDto;
 import leets.enhance.domain.item.repository.ItemRepository;
 import leets.enhance.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static leets.enhance.global.error.ErrorCode.INVALID_ITEM;
 
 @Service
 @RequiredArgsConstructor
@@ -24,24 +28,32 @@ public class ItemService {
     public Item register(User user, ItemRegisterDto requestDto) {
         Item item = Item.of()
                 .name(requestDto.getName())
+                .user(user)
                 .build();
 
-        user.addItem(item);
+        user.registerItem(item);    // User - Item 연관관계 매핑
 
         return itemRepository.save(item);
     }
 
     public List<Item> findTop10() {
-        return itemRepository.findTop10ByIsBrokenOrderByLevelDesc(false);
+        return itemRepository.findAll().stream()
+                .sorted(Comparator.comparing(Item::getLevel).reversed())
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Status enhance(Item item) {
-        if(item.getIsBroken()) {
-            throw new RuntimeException("이미 파괴된 검입니다."); // 수정: 커스텀 예외로 처리
+    public Status enhance(Item item, boolean isBoosted) {
+        double successProb = SuccessProbability.getProbability(item.getLevel());
+        User user = item.getUser();
+
+        if(isBoosted && user.getBooster() > 0) {     // 강화 증가권 사용 시 성공 확률 10퍼센트 증가
+            user.useBooster();
+            successProb += 10;
         }
 
-        if(Math.random() <= SuccessProbability.getProbability(item.getLevel())) {   // 강화 성공
+        if(Math.random() <= successProb) {   // 강화 성공
             return item.success();
         } else {    // 실패 시
             if(Math.random() <= DestroyProbability.getProbability(item.getLevel())) // 파괴 성공
@@ -52,6 +64,6 @@ public class ItemService {
 
     public Item getItem(Long itemId) {
         return itemRepository.findById(itemId)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 검입니다."));
+                .orElseThrow(() -> new InvalidAccessException(INVALID_ITEM));
     }
 }

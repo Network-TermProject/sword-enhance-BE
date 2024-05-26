@@ -1,6 +1,7 @@
 package leets.enhance.domain.item.controller;
 
 import leets.enhance.domain.item.entity.Item;
+import leets.enhance.domain.item.model.request.ItemEnhanceDto;
 import leets.enhance.domain.item.model.response.ItemEnhanceResponseDto;
 import leets.enhance.domain.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,13 @@ public class enhanceController {
     private final ItemService itemService;
 
     @PostMapping()
-    public ResponseEntity<ItemEnhanceResponseDto> enhance(@RequestParam Long itemId) {
-        Item item = itemService.getItem(itemId);
+    public ResponseEntity<ItemEnhanceResponseDto> enhance(@RequestBody ItemEnhanceDto requestDto) {
+        Item item = itemService.getItem(requestDto.getId());
+
         return ResponseEntity.ok(
                 ItemEnhanceResponseDto.builder()
                 .item(item)
-                .status(itemService.enhance(item))
+                .status(itemService.enhance(item, requestDto.getIsBoosted()))
                 .build());
     }
 }

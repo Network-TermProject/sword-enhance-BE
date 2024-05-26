@@ -1,6 +1,10 @@
 package leets.enhance.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import leets.enhance.domain.item.entity.Item;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,14 +24,30 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;    // 수정: Validation 추가
+    private Long id;
+
+    @NotBlank
+    @Email
     private String email;
+
+    @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String pwd;
+
+    @NotBlank
     private String name;
 
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     @JoinColumn(name = "user_id")
-    private List<Item> items;
+    private Item item;
+
+    private Integer booster;
+
+    @PrePersist
+    public void init() {
+        this.booster = 3;
+    }
 
     @Builder(builderMethodName = "of")
     public User(String email, String pwd, String name) {
@@ -36,8 +56,12 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public void addItem(Item item) {
-        items.add(item);
+    public void registerItem(Item item) {
+        this.item = item;
+    }
+
+    public void useBooster() {
+        this.booster--;
     }
 
     @Override
