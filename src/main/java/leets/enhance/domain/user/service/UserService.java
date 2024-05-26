@@ -1,6 +1,8 @@
 package leets.enhance.domain.user.service;
 
 import leets.enhance.domain.user.entity.User;
+import leets.enhance.domain.user.exception.InvalidAccessException;
+import leets.enhance.domain.user.exception.RegisterErrorException;
 import leets.enhance.domain.user.model.request.UserCheckDuplicateIdDto;
 import leets.enhance.domain.user.model.request.UserLoginDto;
 import leets.enhance.domain.user.model.request.UserRegisterDto;
@@ -10,11 +12,11 @@ import leets.enhance.global.jwt.JwtTokenService;
 import leets.enhance.global.jwt.RefreshToken;
 import leets.enhance.global.jwt.TokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static leets.enhance.global.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +29,10 @@ public class UserService {
 
     public User register(UserRegisterDto requestDto) {
         if(!requestDto.getIsChecked())
-            throw new BadCredentialsException("이메일 확인을 먼저 해주세요.");
+            throw new RegisterErrorException(UNCHECKED_EMAIL);
 
         if(!requestDto.getPwd().equals(requestDto.getCheckPwd()))
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new RegisterErrorException(MISMATCH_PASSWORD);
 
         User user = User.of()
                 .email(requestDto.getEmail())
@@ -43,10 +45,10 @@ public class UserService {
 
     public JwtToken login(UserLoginDto requestDto) {
         User user = userRepository.findUserByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));
+                .orElseThrow(() -> new InvalidAccessException(INVALID_ID));
 
         if(!passwordEncoder.matches(requestDto.getPwd(), user.getPwd()))
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidAccessException(INVALID_PASSWORD);
 
         // 토큰 생성
         JwtToken token = jwtTokenService.generateToken(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPwd()));
@@ -62,6 +64,6 @@ public class UserService {
 
     public User getUser(String email) {
         return userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new InvalidAccessException(INVALID_USER));
     }
 }
