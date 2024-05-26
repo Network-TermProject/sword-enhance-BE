@@ -1,7 +1,10 @@
 package leets.enhance.domain.item.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import leets.enhance.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +21,25 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
     private String name;
+
     private Integer level;
-    private Boolean isBroken;
+
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private User user;
 
     @PrePersist
     public void init() {
-        this.isBroken = false;
-        this.level = 0;
+        this.level = 1;
     }
 
     @Builder(builderMethodName = "of")
-    public Item(String name) {
+    public Item(String name, User user) {
         this.name = name;
+        this.user = user;
     }
 
     public Status success() {
@@ -39,12 +48,15 @@ public class Item {
     }
 
     public Status fail() {
+        if(this.level == 0)     // 파괴된 아이템이라면 실패해도 강화 단계가 하락하지 않음
+            return FAIL;
+
         this.level--;
         return FAIL;
     }
 
     public Status destroy() {
-        this.isBroken = true;
+        this.level = 0;
         return DESTROY;
     }
 }

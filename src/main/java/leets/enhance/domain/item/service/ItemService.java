@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static leets.enhance.global.error.ErrorCode.INVALID_ITEM;
+import static leets.enhance.global.error.ErrorCode.ITEM_ALREADY_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,9 @@ public class ItemService {
 
     @Transactional
     public Item register(User user, ItemRegisterDto requestDto) {
+        if(user.getItem() != null)
+            throw new InvalidAccessException(ITEM_ALREADY_EXIST);   // 이미 아이템이 존재하면 ERROR
+
         Item item = Item.of()
                 .name(requestDto.getName())
                 .user(user)
@@ -46,8 +50,8 @@ public class ItemService {
     @Transactional
     public Status enhance(Item item, boolean isBoosted) {
         double successProb = SuccessProbability.getProbability(item.getLevel());
-        User user = item.getUser();
 
+        User user = item.getUser();
         if(isBoosted && user.getBooster() > 0) {     // 강화 증가권 사용 시 성공 확률 10퍼센트 증가
             user.useBooster();
             successProb += 10;

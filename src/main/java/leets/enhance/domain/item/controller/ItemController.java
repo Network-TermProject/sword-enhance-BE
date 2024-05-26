@@ -28,9 +28,9 @@ public class ItemController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Item>> findMyItems(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Item> findMyItem(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUser(userDetails.getUsername());
-        return ResponseEntity.ok(user.getItems());
+        return ResponseEntity.ok(user.getItem());
     }
 
     @GetMapping("/top10")
