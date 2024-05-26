@@ -5,9 +5,9 @@ import leets.enhance.domain.user.model.request.UserCheckDuplicateIdDto;
 import leets.enhance.domain.user.model.request.UserLoginDto;
 import leets.enhance.domain.user.model.request.UserRegisterDto;
 import leets.enhance.domain.user.service.UserService;
+import leets.enhance.global.common.BaseResponse;
 import leets.enhance.global.jwt.JwtToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,17 +18,17 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody UserRegisterDto requestDto) {
-        return ResponseEntity.ok(userService.register(requestDto));
+    public BaseResponse<User> register(@RequestBody UserRegisterDto requestDto) {
+        return BaseResponse.of(userService.register(requestDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtToken> login(@RequestBody UserLoginDto requestDto) {
-        return ResponseEntity.ok(userService.login(requestDto));
+    public BaseResponse<JwtToken> login(@RequestBody UserLoginDto requestDto) {
+        return BaseResponse.of(userService.login(requestDto));
     }
 
     @GetMapping("/check-duplicate-id")
-    public ResponseEntity<Boolean> checkDuplicateId(@RequestBody UserCheckDuplicateIdDto requestDto) {
-        return ResponseEntity.ok(userService.check(requestDto));
+    public BaseResponse<Boolean> checkDuplicateId(@RequestBody UserCheckDuplicateIdDto requestDto) {
+        return BaseResponse.of(userService.check(requestDto));
     }
 }

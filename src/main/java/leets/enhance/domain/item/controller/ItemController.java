@@ -5,6 +5,7 @@ import leets.enhance.domain.item.model.request.ItemRegisterDto;
 import leets.enhance.domain.item.service.ItemService;
 import leets.enhance.domain.user.entity.User;
 import leets.enhance.domain.user.service.UserService;
+import leets.enhance.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,19 +23,19 @@ public class ItemController {
     private final UserService userService;
 
     @PostMapping()
-    public ResponseEntity<Item> register(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ItemRegisterDto requestDto) {
+    public BaseResponse<Item> register(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ItemRegisterDto requestDto) {
         User user = userService.getUser(userDetails.getUsername());
-        return ResponseEntity.ok(itemService.register(user, requestDto));
+        return BaseResponse.of(itemService.register(user, requestDto));
     }
 
     @GetMapping("")
-    public ResponseEntity<Item> findMyItem(@AuthenticationPrincipal UserDetails userDetails) {
+    public BaseResponse<Item> findMyItem(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUser(userDetails.getUsername());
-        return ResponseEntity.ok(user.getItem());
+        return BaseResponse.of(user.getItem());
     }
 
     @GetMapping("/top10")
-    public ResponseEntity<List<Item>> findTop10() {
-        return ResponseEntity.ok(itemService.findTop10());
+    public BaseResponse<List<Item>> findTop10() {
+        return BaseResponse.of(itemService.findTop10());
     }
 }
