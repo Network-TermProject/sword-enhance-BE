@@ -7,13 +7,13 @@ import java.util.Arrays;
 @Getter
 public enum SuccessProbability {
 
-    LEVEL_0(0, 0.9),
-    LEVEL_1(1, 0.8),
-    LEVEL_2(2, 0.7),
-    LEVEL_3(3, 0.5),
-    LEVEL_4(4, 0.3),
-    LEVEL_5(5, 0.1),
-    MAX(6, 0.03);
+    LEVEL_1(1, 0.9),
+    LEVEL_2(2, 0.8),
+    LEVEL_3(3, 0.7),
+    LEVEL_4(4, 0.5),
+    LEVEL_5(5, 0.3),
+    LEVEL_6(6, 0.1),
+    MAX(7, 0.03);
 
     private final int currentLevel;
     private final double probability;
