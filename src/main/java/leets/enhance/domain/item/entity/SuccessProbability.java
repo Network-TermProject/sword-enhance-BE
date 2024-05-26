@@ -7,7 +7,7 @@ import java.util.Arrays;
 @Getter
 public enum SuccessProbability {
 
-    MIN(0, 0.9),
+    MIN(0, 0.9),    // 파괴됐을 경우
     LEVEL_1(1, 0.9),
     LEVEL_2(2, 0.8),
     LEVEL_3(3, 0.7),
