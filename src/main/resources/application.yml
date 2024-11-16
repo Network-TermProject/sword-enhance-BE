@@ -3,7 +3,6 @@ spring:
     url: jdbc:mysql://localhost:3306/enhance?serverTimezone=Asia/Seoul
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: rlarudrb119!
 
   jpa:
     database: mysql

@@ -1,5 +1,6 @@
 package leets.enhance.domain.user.model.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -7,7 +8,8 @@ import lombok.Getter;
 public class UserRegisterDto {  // 수정: DTO 모두 class -> record
 
     @NotNull
-    private String email;   // 수정: Validation 추가
+    @Email
+    private String email;
 
     @NotNull
     private String name;
