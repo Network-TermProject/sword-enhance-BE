@@ -3,7 +3,6 @@ package leets.enhance.domain.user.service;
 import leets.enhance.domain.user.entity.User;
 import leets.enhance.domain.user.exception.InvalidAccessException;
 import leets.enhance.domain.user.exception.RegisterErrorException;
-import leets.enhance.domain.user.model.request.UserCheckDuplicateIdDto;
 import leets.enhance.domain.user.model.request.UserLoginDto;
 import leets.enhance.domain.user.model.request.UserRegisterDto;
 import leets.enhance.domain.user.repository.UserRepository;
@@ -48,13 +47,11 @@ public class UserService {
             throw new InvalidAccessException(INVALID_PASSWORD);
 
         // 토큰 생성
-        JwtToken token = jwtTokenService.generateToken(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPwd()));
-
-        return token;
+        return jwtTokenService.generateToken(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPwd()));
     }
 
-    public boolean check(UserCheckDuplicateIdDto requestDto) {
-        return userRepository.existsUserByEmail(requestDto.getEmail());
+    public boolean check(String email) {
+        return !userRepository.existsUserByEmail(email);
     }
 
     public User getUser(String email) {

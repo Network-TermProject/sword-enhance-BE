@@ -1,7 +1,6 @@
 package leets.enhance.domain.user.controller;
 
 import leets.enhance.domain.user.entity.User;
-import leets.enhance.domain.user.model.request.UserCheckDuplicateIdDto;
 import leets.enhance.domain.user.model.request.UserLoginDto;
 import leets.enhance.domain.user.model.request.UserRegisterDto;
 import leets.enhance.domain.user.service.UserService;
@@ -28,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/check-duplicate-id")
-    public BaseResponse<Boolean> checkDuplicateId(@RequestBody UserCheckDuplicateIdDto requestDto) {
-        return BaseResponse.of(userService.check(requestDto));
+    public BaseResponse<Boolean> checkDuplicateId(@RequestParam String email) {
+        return BaseResponse.of(userService.check(email));
     }
 }
