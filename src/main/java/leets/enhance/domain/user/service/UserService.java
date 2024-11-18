@@ -9,8 +9,6 @@ import leets.enhance.domain.user.model.request.UserRegisterDto;
 import leets.enhance.domain.user.repository.UserRepository;
 import leets.enhance.global.jwt.JwtToken;
 import leets.enhance.global.jwt.JwtTokenService;
-import leets.enhance.global.jwt.RefreshToken;
-import leets.enhance.global.jwt.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +23,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService jwtTokenService;
-    private final TokenRepository tokenRepository;
 
     public User register(UserRegisterDto requestDto) {
         if(!requestDto.getIsChecked())
@@ -53,8 +50,6 @@ public class UserService {
         // 토큰 생성
         JwtToken token = jwtTokenService.generateToken(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPwd()));
 
-        // refreshToken DB 저장
-        tokenRepository.save(new RefreshToken(token.getRefreshToken()));
         return token;
     }
 
