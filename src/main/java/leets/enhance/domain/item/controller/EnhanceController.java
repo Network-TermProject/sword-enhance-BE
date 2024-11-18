@@ -6,13 +6,12 @@ import leets.enhance.domain.item.model.response.ItemEnhanceResponseDto;
 import leets.enhance.domain.item.service.ItemService;
 import leets.enhance.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/enhance")
 @RequiredArgsConstructor
-public class enhanceController {
+public class EnhanceController {
 
     private final ItemService itemService;
 
