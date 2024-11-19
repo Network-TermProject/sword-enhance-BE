@@ -7,6 +7,8 @@ import leets.enhance.domain.user.service.UserService;
 import leets.enhance.global.common.BaseResponse;
 import leets.enhance.global.jwt.JwtToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,5 +31,11 @@ public class UserController {
     @GetMapping("/check-duplicate-id")
     public BaseResponse<Boolean> checkDuplicateId(@RequestParam String email) {
         return BaseResponse.of(userService.check(email));
+    }
+
+    @GetMapping
+    public BaseResponse<User> getUser(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUser(userDetails.getUsername());
+        return BaseResponse.of(user);
     }
 }
