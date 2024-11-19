@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/items/top10").permitAll()    // 비로그인 유저 접근 허용
                         .requestMatchers("/users/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated())
 
                 // Jwt 토큰 필터 삽입
