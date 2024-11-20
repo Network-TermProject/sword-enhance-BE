@@ -1,6 +1,7 @@
 package leets.enhance.domain.item.controller;
 
 import leets.enhance.domain.item.entity.Item;
+import leets.enhance.domain.item.entity.Status;
 import leets.enhance.domain.item.model.request.ItemEnhanceDto;
 import leets.enhance.domain.item.model.response.ItemEnhanceResponseDto;
 import leets.enhance.domain.item.service.ItemService;
@@ -18,11 +19,12 @@ public class EnhanceController {
     @PostMapping()
     public BaseResponse<ItemEnhanceResponseDto> enhance(@RequestBody ItemEnhanceDto requestDto) {
         Item item = itemService.getItem(requestDto.getId());
+        Status status = itemService.enhance(item, requestDto.getIsBoosted());
 
         return BaseResponse.of(
                 ItemEnhanceResponseDto.builder()
                 .item(item)
-                .status(itemService.enhance(item, requestDto.getIsBoosted()))
+                .status(status)
                 .build());
     }
 }

@@ -2,12 +2,12 @@ package leets.enhance.domain.item.controller;
 
 import leets.enhance.domain.item.entity.Item;
 import leets.enhance.domain.item.model.request.ItemRegisterDto;
+import leets.enhance.domain.item.model.response.ItemSummaryDto;
 import leets.enhance.domain.item.service.ItemService;
 import leets.enhance.domain.user.entity.User;
 import leets.enhance.domain.user.service.UserService;
 import leets.enhance.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +35,9 @@ public class ItemController {
     }
 
     @GetMapping("/top10")
-    public BaseResponse<List<Item>> findTop10() {
-        return BaseResponse.of(itemService.findTop10());
+    public BaseResponse<List<ItemSummaryDto>> findTop10() {
+        return BaseResponse.of(itemService.findTop10().stream()
+                .map(ItemSummaryDto::new)
+                .toList());
     }
 }

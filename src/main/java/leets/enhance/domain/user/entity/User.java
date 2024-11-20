@@ -1,6 +1,5 @@
 package leets.enhance.domain.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -38,7 +37,7 @@ public class User implements UserDetails {
     private String name;
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnore
+//    @JsonIgnore
     @JoinColumn(name = "user_id")
     private Item item;
 
